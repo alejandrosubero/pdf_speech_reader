@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-900 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lector de PDF a Voz (TTS)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- PDF.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* Custom scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+
+    /* Highlight style for active spoken sentence */
+    .highlight-active {
+      background-color: rgba(59, 130, 246, 0.4);
+      color: #ffffff;
+      border-radius: 4px;
+      padding: 2px 6px;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    }
+
+    .sentence-span {
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+      border-radius: 4px;
+      padding: 2px 4px;
+      display: inline;
+    }
+    .sentence-span:hover {
+      background-color: rgba(255, 255, 255, 0.15);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased bg-slate-900 text-slate-100">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-30 flex-shrink-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center space-x-3 min-w-0">
+        <div class="p-2 bg-blue-600/20 text-blue-400 rounded-lg border border-blue-500/30 flex-shrink-0">
+          <i data-lucide="book-open-check" class="w-6 h-6"></i>
+        </div>
+        <div class="truncate">
+          <h1 class="font-bold text-lg leading-tight text-slate-100 truncate">AudioPDF Reader</h1>
+          <p class="text-xs text-slate-400 hidden sm:block">Lector de PDF a Voz 100% Local y Privado</p>
+        </div>
+      </div>
+
+      <!-- Status Badge -->
+      <div id="header-status-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700 flex-shrink-0">
+        <span class="w-2 h-2 rounded-full bg-slate-500" id="status-indicator"></span>
+        <span id="status-text">Esperando documento...</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- LEFT COLUMN: File Upload & Controls -->
+    <div class="lg:col-span-5 flex flex-col gap-6 w-full">
+      
+      <!-- Upload Dropzone Card -->
+      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5 shadow-xl relative z-10">
+        <h2 class="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+          <i data-lucide="file-up" class="w-4 h-4 text-blue-400"></i> Cargar Documento
+        </h2>
+
+        <!-- Interactive Drag and Drop Area -->
+        <div id="drop-zone" class="relative border-2 border-dashed border-slate-600 hover:border-blue-500 bg-slate-900/60 hover:bg-slate-900/90 rounded-xl p-6 text-center cursor-pointer transition-all duration-200 group flex flex-col items-center justify-center">
+          <input type="file" id="pdf-input" accept="application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" />
+          
+          <div class="p-3 bg-slate-800 text-slate-400 group-hover:text-blue-400 group-hover:bg-blue-950/50 rounded-full mb-3 transition-colors pointer-events-none">
+            <i data-lucide="upload-cloud" class="w-8 h-8"></i>
+          </div>
+          <p class="text-sm font-medium text-slate-200 pointer-events-none">Haz clic o arrastra un archivo PDF aquí</p>
+          <p class="text-xs text-slate-400 mt-1 pointer-events-none">Procesamiento 100% local en tu navegador</p>
+        </div>
+
+        <!-- Loaded File Details Header -->
+        <div id="file-info" class="hidden mt-3 p-3 bg-slate-900/80 rounded-xl border border-slate-700/60 flex items-center justify-between">
+          <div class="flex items-center space-x-2.5 truncate pr-2">
+            <i data-lucide="file-text" class="w-5 h-5 text-blue-400 flex-shrink-0"></i>
+            <span id="file-name" class="text-xs font-medium text-slate-200 truncate">documento.pdf</span>
+          </div>
+          <button id="btn-change-file" class="text-xs text-slate-400 hover:text-red-400 transition-colors p-1.5 hover:bg-slate-800 rounded-lg flex items-center gap-1 flex-shrink-0" title="Cambiar PDF">
+            <i data-lucide="x-circle" class="w-4 h-4"></i>
+            <span>Quitar</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Audio Controls Card -->
+      <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-5 shadow-xl flex flex-col gap-5">
+        <h2 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+          <i data-lucide="sliders" class="w-4 h-4 text-blue-400"></i> Controles de Lectura
+        </h2>
+
+        <!-- Main Buttons -->
+        <div class="flex items-center justify-center gap-3">
+          <button id="btn-prev-page" disabled class="p-3 bg-slate-700 hover:bg-slate-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-slate-200 rounded-xl transition-all" title="Página anterior">
+            <i data-lucide="skip-back" class="w-5 h-5"></i>
+          </button>
+          <button id="btn-play" disabled class="p-4 bg-blue-600 hover:bg-blue-500 disabled:opacity-30 disabled:hover:bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-600/30 transition-all scale-105 active:scale-95 flex items-center justify-center" title="Reproducir / Pausar">
+            <i data-lucide="play" id="play-icon" class="w-6 h-6"></i>
+          </button>
+          <button id="btn-stop" disabled class="p-3 bg-slate-700 hover:bg-slate-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-slate-200 rounded-xl transition-all" title="Detener">
+            <i data-lucide="square" class="w-5 h-5"></i>
+          </button>
+          <button id="btn-next-page" disabled class="p-3 bg-slate-700 hover:bg-slate-600 disabled:opacity-30 disabled:hover:bg-slate-700 text-slate-200 rounded-xl transition-all" title="Siguiente página">
+            <i data-lucide="skip-forward" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Page Selector -->
+        <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-700/60 flex items-center justify-between text-xs">
+          <span class="text-slate-400">Página actual</span>
+          <div class="flex items-center gap-2">
+            <input type="number" id="page-input" min="1" value="1" disabled class="w-16 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 text-center font-mono text-slate-100 focus:outline-none focus:border-blue-500 disabled:opacity-40">
+            <span class="text-slate-400">de <span id="total-pages" class="font-mono text-slate-200">0</span></span>
+          </div>
+        </div>
+
+        <!-- Voice Selector -->
+        <div class="space-y-1.5">
+          <label for="voice-select" class="text-xs font-medium text-slate-400 flex items-center gap-1.5">
+            <i data-lucide="user-voice" class="w-3.5 h-3.5"></i> Voz del Sistema
+          </label>
+          <select id="voice-select" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-blue-500 truncate cursor-pointer">
+            <option value="">Cargando voces del sistema...</option>
+          </select>
+        </div>
+
+        <!-- Sliders: Rate, Pitch, Volume -->
+        <div class="space-y-4 pt-1">
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs">
+              <label for="rate-range" class="text-slate-400 flex items-center gap-1">
+                <i data-lucide="gauge" class="w-3.5 h-3.5"></i> Velocidad
+              </label>
+              <span id="rate-value" class="font-mono text-blue-400 font-semibold">1.0x</span>
+            </div>
+            <input type="range" id="rate-range" min="0.5" max="2.0" step="0.1" value="1.0" class="w-full accent-blue-500 bg-slate-700 h-1.5 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs">
+              <label for="pitch-range" class="text-slate-400 flex items-center gap-1">
+                <i data-lucide="music" class="w-3.5 h-3.5"></i> Tono
+              </label>
+              <span id="pitch-value" class="font-mono text-blue-400 font-semibold">1.0</span>
+            </div>
+            <input type="range" id="pitch-range" min="0.5" max="1.5" step="0.1" value="1.0" class="w-full accent-blue-500 bg-slate-700 h-1.5 rounded-lg appearance-none cursor-pointer">
+          </div>
+
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs">
+              <label for="volume-range" class="text-slate-400 flex items-center gap-1">
+                <i data-lucide="volume-2" class="w-3.5 h-3.5"></i> Volumen
+              </label>
+              <span id="volume-value" class="font-mono text-blue-400 font-semibold">100%</span>
+            </div>
+            <input type="range" id="volume-range" min="0" max="1" step="0.05" value="1" class="w-full accent-blue-500 bg-slate-700 h-1.5 rounded-lg appearance-none cursor-pointer">
+          </div>
+        </div>
+
+        <!-- Auto Advance Toggle -->
+        <div class="pt-3 border-t border-slate-700/60 flex items-center justify-between">
+          <span class="text-xs text-slate-400">Avanzar página automáticamente</span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="auto-next-toggle" checked class="sr-only peer">
+            <div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+          </label>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: Text Display Screen -->
+    <div class="lg:col-span-7 bg-slate-800/90 border border-slate-700 rounded-2xl shadow-xl flex flex-col h-[600px] lg:h-[calc(100vh-10rem)] sticky top-20 overflow-hidden">
+      
+      <!-- Screen Header -->
+      <div class="p-4 border-b border-slate-700/80 bg-slate-900/50 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center space-x-2">
+          <i data-lucide="align-left" class="w-4 h-4 text-blue-400"></i>
+          <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Texto extraído</span>
+        </div>
+
+        <!-- Progress Indicator -->
+        <div class="flex items-center gap-3 w-1/2 max-w-[200px]">
+          <div class="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+            <div id="reading-progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-300"></div>
+          </div>
+          <span id="reading-progress-text" class="text-xs font-mono text-slate-400 min-w-[35px] text-right">0%</span>
+        </div>
+      </div>
+
+      <!-- Main Text Scroll Area -->
+      <div id="text-display-container" class="flex-1 p-6 overflow-y-auto leading-relaxed text-slate-200 text-base sm:text-lg relative">
+        <div id="empty-state" class="h-full flex flex-col items-center justify-center text-center text-slate-500 space-y-3 p-4">
+          <div class="p-4 bg-slate-900/50 rounded-full text-slate-600">
+            <i data-lucide="file-search" class="w-10 h-10"></i>
+          </div>
+          <p class="text-sm max-w-sm">Sube un libro o documento PDF para comenzar a escuchar el texto con resaltado en tiempo real.</p>
+        </div>
+        <div id="text-content" class="hidden leading-relaxed"></div>
+      </div>
+
+      <!-- Screen Footer -->
+      <div class="p-3 bg-slate-900/70 border-t border-slate-700/60 flex items-center justify-between text-xs text-slate-400 px-6 flex-shrink-0">
+        <span class="truncate pr-2">Haz clic sobre cualquier frase para iniciar la lectura desde ahí.</span>
+        <span id="char-count-badge" class="font-mono flex-shrink-0">0 caracteres</span>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // PDF.js Worker Configuration
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    // Application State
+    let pdfDoc = null;
+    let currentPage = 1;
+    let totalPages = 0;
+    let sentences = [];
+    let currentSentenceIndex = 0;
+    let voices = [];
+    let isPlaying = false;
+    let currentUtterance = null;
+
+    // DOM Elements
+    const dropZone = document.getElementById('drop-zone');
+    const pdfInput = document.getElementById('pdf-input');
+    const fileInfo = document.getElementById('file-info');
+    const fileName = document.getElementById('file-name');
+    const btnChangeFile = document.getElementById('btn-change-file');
+
+    const btnPlay = document.getElementById('btn-play');
+    const playIcon = document.getElementById('play-icon');
+    const btnStop = document.getElementById('btn-stop');
+    const btnPrevPage = document.getElementById('btn-prev-page');
+    const btnNextPage = document.getElementById('btn-next-page');
+
+    const pageInput = document.getElementById('page-input');
+    const totalPagesSpan = document.getElementById('total-pages');
+    const voiceSelect = document.getElementById('voice-select');
+
+    const rateRange = document.getElementById('rate-range');
+    const rateValue = document.getElementById('rate-value');
+    const pitchRange = document.getElementById('pitch-range');
+    const pitchValue = document.getElementById('pitch-value');
+    const volumeRange = document.getElementById('volume-range');
+    const volumeValue = document.getElementById('volume-value');
+    const autoNextToggle = document.getElementById('auto-next-toggle');
+
+    const textContentDiv = document.getElementById('text-content');
+    const emptyState = document.getElementById('empty-state');
+    const statusText = document.getElementById('status-text');
+    const statusIndicator = document.getElementById('status-indicator');
+    const charCountBadge = document.getElementById('char-count-badge');
+    const progressBar = document.getElementById('reading-progress-bar');
+    const progressText = document.getElementById('reading-progress-text');
+
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Init Speech Voices
+    function initVoices() {
+      if (!('speechSynthesis' in window)) {
+        updateStatus('Navegador no soporta TTS', 'bg-red-500');
+        return;
+      }
+
+      voices = window.speechSynthesis.getVoices();
+      if (voices.length > 0) {
+        populateVoiceList();
+      } else {
+        window.speechSynthesis.onvoiceschanged = () => {
+          voices = window.speechSynthesis.getVoices();
+          populateVoiceList();
+        };
+      }
+    }
+
+    function populateVoiceList() {
+      voiceSelect.innerHTML = '';
+      
+      const esVoices = voices.filter(v => v.lang.startsWith('es'));
+      const otherVoices = voices.filter(v => !v.lang.startsWith('es'));
+
+      const createOption = (voice) => {
+        const option = document.createElement('option');
+        option.value = voice.name;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        return option;
+      };
+
+      if (esVoices.length > 0) {
+        const groupEs = document.createElement('optgroup');
+        groupEs.label = 'Voces en Español';
+        esVoices.forEach(v => groupEs.appendChild(createOption(v)));
+        voiceSelect.appendChild(groupEs);
+      }
+
+      if (otherVoices.length > 0) {
+        const groupOther = document.createElement('optgroup');
+        groupOther.label = 'Otros Idiomas';
+        otherVoices.forEach(v => groupOther.appendChild(createOption(v)));
+        voiceSelect.appendChild(groupOther);
+      }
+
+      if (esVoices.length > 0) {
+        const defaultEs = esVoices.find(v => v.default) || esVoices[0];
+        voiceSelect.value = defaultEs.name;
+      }
+    }
+
+    // Drag and Drop Events
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('border-blue-500', 'bg-slate-900/90');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('border-blue-500', 'bg-slate-900/90');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-blue-500', 'bg-slate-900/90');
+      if (e.dataTransfer.files.length > 0) {
+        handleFileSelect(e.dataTransfer.files[0]);
+      }
+    });
+
+    pdfInput.addEventListener('change', (e) => {
+      if (e.target.files.length > 0) {
+        handleFileSelect(e.target.files[0]);
+      }
+    });
+
+    btnChangeFile.addEventListener('click', resetApp);
+
+    function handleFileSelect(file) {
+      if (file.type !== 'application/pdf') {
+        alert('Por favor selecciona un archivo PDF válido.');
+        return;
+      }
+
+      fileName.textContent = file.name;
+      dropZone.classList.add('hidden');
+      fileInfo.classList.remove('hidden');
+
+      const fileReader = new FileReader();
+      fileReader.onload = async function () {
+        const typedarray = new Uint8Array(this.result);
+        try {
+          updateStatus('Cargando PDF...', 'bg-yellow-500');
+          pdfDoc = await pdfjsLib.getDocument({ data: typedarray }).promise;
+          totalPages = pdfDoc.numPages;
+          totalPagesSpan.textContent = totalPages;
+          currentPage = 1;
+          pageInput.value = 1;
+          pageInput.max = totalPages;
+          
+          enableControls();
+          await loadPageText(currentPage);
+          updateStatus('PDF cargado. Listo para leer.', 'bg-emerald-500');
+        } catch (err) {
+          console.error(err);
+          updateStatus('Error al leer PDF', 'bg-red-500');
+          alert('Hubo un error al procesar el archivo PDF.');
+        }
+      };
+      fileReader.readAsArrayBuffer(file);
+    }
+
+    // Extract Text and Split Sentences
+    async function loadPageText(pageNum) {
+      stopSpeech();
+      if (!pdfDoc) return;
+      
+      updateStatus(`Cargando página ${pageNum}...`, 'bg-yellow-500');
+
+      try {
+        const page = await pdfDoc.getPage(pageNum);
+        const textContent = await page.getTextContent();
+        
+        let fullText = textContent.items
+          .map(item => item.str)
+          .join(' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        if (!fullText) {
+          showEmptyPageMessage();
+          return;
+        }
+
+        sentences = splitIntoSentences(fullText);
+        currentSentenceIndex = 0;
+        
+        renderSentences();
+        updateProgress();
+        updateStatus(`Página ${pageNum} de ${totalPages} lista`, 'bg-emerald-500');
+        charCountBadge.textContent = `${fullText.length} caracteres`;
+
+      } catch (err) {
+        console.error('Error extrayendo texto:', err);
+        updateStatus('Error en la página', 'bg-red-500');
+      }
+    }
+
+    function splitIntoSentences(text) {
+      const matches = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g);
+      if (!matches) return [text];
+      return matches.map(s => s.trim()).filter(s => s.length > 0);
+    }
+
+    function renderSentences() {
+      emptyState.classList.add('hidden');
+      textContentDiv.classList.remove('hidden');
+      textContentDiv.innerHTML = '';
+
+      sentences.forEach((sentence, index) => {
+        const span = document.createElement('span');
+        span.id = `sentence-${index}`;
+        span.className = 'sentence-span';
+        span.textContent = sentence + ' ';
+        span.addEventListener('click', () => jumpToSentence(index));
+        textContentDiv.appendChild(span);
+      });
+    }
+
+    function showEmptyPageMessage() {
+      sentences = [];
+      emptyState.classList.remove('hidden');
+      textContentDiv.classList.add('hidden');
+      emptyState.querySelector('p').textContent = 'Esta página no contiene texto seleccionable (posiblemente sea un escaneo o imagen).';
+      updateStatus('Página sin texto', 'bg-orange-500');
+      charCountBadge.textContent = '0 caracteres';
+      updateProgress();
+    }
+
+    // Playback Logic
+    function togglePlay() {
+      if (!pdfDoc || sentences.length === 0) return;
+
+      if (window.speechSynthesis.paused && isPlaying) {
+        window.speechSynthesis.resume();
+        setPlayState(true);
+        updateStatus('Lectura reanudada', 'bg-emerald-500');
+      } else if (isPlaying) {
+        window.speechSynthesis.pause();
+        setPlayState(false, true);
+        updateStatus('Lectura pausada', 'bg-yellow-500');
+      } else {
+        speakCurrentSentence();
+      }
+    }
+
+    function speakCurrentSentence() {
+      window.speechSynthesis.cancel();
+
+      if (currentSentenceIndex >= sentences.length) {
+        if (autoNextToggle.checked && currentPage < totalPages) {
+          changePage(currentPage + 1, true);
+        } else {
+          stopSpeech();
+          updateStatus('Página completada', 'bg-blue-500');
+        }
+        return;
+      }
+
+      const textToSpeak = sentences[currentSentenceIndex];
+      highlightSentence(currentSentenceIndex);
+      updateProgress();
+
+      currentUtterance = new SpeechSynthesisUtterance(textToSpeak);
+
+      const selectedVoiceName = voiceSelect.value;
+      if (selectedVoiceName) {
+        const foundVoice = voices.find(v => v.name === selectedVoiceName);
+        if (foundVoice) currentUtterance.voice = foundVoice;
+      }
+
+      currentUtterance.rate = parseFloat(rateRange.value);
+      currentUtterance.pitch = parseFloat(pitchRange.value);
+      currentUtterance.volume = parseFloat(volumeRange.value);
+
+      currentUtterance.onend = () => {
+        if (isPlaying) {
+          currentSentenceIndex++;
+          speakCurrentSentence();
+        }
+      };
+
+      currentUtterance.onerror = (e) => {
+        console.error('TTS Error:', e);
+        if (isPlaying) {
+          currentSentenceIndex++;
+          speakCurrentSentence();
+        }
+      };
+
+      setPlayState(true);
+      updateStatus(`Leyendo página ${currentPage}...`, 'bg-emerald-500');
+      window.speechSynthesis.speak(currentUtterance);
+    }
+
+    function stopSpeech() {
+      window.speechSynthesis.cancel();
+      isPlaying = false;
+      setPlayState(false);
+      removeHighlights();
+      updateStatus(pdfDoc ? 'Listo para leer' : 'Esperando documento...', pdfDoc ? 'bg-emerald-500' : 'bg-slate-500');
+    }
+
+    function jumpToSentence(index) {
+      currentSentenceIndex = index;
+      speakCurrentSentence();
+    }
+
+    function highlightSentence(index) {
+      removeHighlights();
+      const element = document.getElementById(`sentence-${index}`);
+      if (element) {
+        element.classList.add('highlight-active');
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function removeHighlights() {
+      document.querySelectorAll('.highlight-active').forEach(el => {
+        el.classList.remove('highlight-active');
+      });
+    }
+
+    function updateProgress() {
+      if (sentences.length === 0) {
+        progressBar.style.width = '0%';
+        progressText.textContent = '0%';
+        return;
+      }
+      const progress = Math.round(((currentSentenceIndex) / sentences.length) * 100);
+      progressBar.style.width = `${progress}%`;
+      progressText.textContent = `${progress}%`;
+    }
+
+    async function changePage(newPage, autoPlayAfter = false) {
+      if (newPage < 1 || newPage > totalPages) return;
+      currentPage = newPage;
+      pageInput.value = currentPage;
+      
+      await loadPageText(currentPage);
+      
+      if (autoPlayAfter) {
+        currentSentenceIndex = 0;
+        speakCurrentSentence();
+      }
+    }
+
+    function enableControls() {
+      btnPlay.disabled = false;
+      btnStop.disabled = false;
+      btnPrevPage.disabled = false;
+      btnNextPage.disabled = false;
+      pageInput.disabled = false;
+    }
+
+    function setPlayState(playing, paused = false) {
+      isPlaying = playing;
+      if (playing) {
+        playIcon.setAttribute('data-lucide', 'pause');
+      } else {
+        playIcon.setAttribute('data-lucide', 'play');
+      }
+      lucide.createIcons();
+    }
+
+    function updateStatus(text, colorClass) {
+      statusText.textContent = text;
+      statusIndicator.className = `w-2 h-2 rounded-full ${colorClass}`;
+    }
+
+    function resetApp() {
+      stopSpeech();
+      pdfDoc = null;
+      currentPage = 1;
+      totalPages = 0;
+      sentences = [];
+      
+      dropZone.classList.remove('hidden');
+      fileInfo.classList.add('hidden');
+      pdfInput.value = '';
+      
+      btnPlay.disabled = true;
+      btnStop.disabled = true;
+      btnPrevPage.disabled = true;
+      btnNextPage.disabled = true;
+      pageInput.disabled = true;
+      pageInput.value = 1;
+      totalPagesSpan.textContent = '0';
+      
+      emptyState.classList.remove('hidden');
+      textContentDiv.classList.add('hidden');
+      emptyState.querySelector('p').textContent = 'Sube un libro o documento PDF para comenzar a escuchar el texto con resaltado en tiempo real.';
+      charCountBadge.textContent = '0 caracteres';
+      updateProgress();
+    }
+
+    // Controls Handlers
+    btnPlay.addEventListener('click', togglePlay);
+    btnStop.addEventListener('click', stopSpeech);
+
+    btnPrevPage.addEventListener('click', () => {
+      if (currentPage > 1) changePage(currentPage - 1, isPlaying);
+    });
+
+    btnNextPage.addEventListener('click', () => {
+      if (currentPage < totalPages) changePage(currentPage + 1, isPlaying);
+    });
+
+    pageInput.addEventListener('change', (e) => {
+      const targetPage = parseInt(e.target.value);
+      if (targetPage >= 1 && targetPage <= totalPages) {
+        changePage(targetPage, isPlaying);
+      } else {
+        pageInput.value = currentPage;
+      }
+    });
+
+    rateRange.addEventListener('input', (e) => {
+      rateValue.textContent = `${parseFloat(e.target.value).toFixed(1)}x`;
+      if (isPlaying) speakCurrentSentence();
+    });
+
+    pitchRange.addEventListener('input', (e) => {
+      pitchValue.textContent = parseFloat(e.target.value).toFixed(1);
+      if (isPlaying) speakCurrentSentence();
+    });
+
+    volumeRange.addEventListener('input', (e) => {
+      volumeValue.textContent = `${Math.round(e.target.value * 100)}%`;
+      if (isPlaying) speakCurrentSentence();
+    });
+
+    voiceSelect.addEventListener('change', () => {
+      if (isPlaying) speakCurrentSentence();
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initVoices();
+    });
+  </script>
+</body>
+</html>
