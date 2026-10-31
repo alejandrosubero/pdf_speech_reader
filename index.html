@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>AudioPDF Reader</title>
+  <script>
+    try { if (localStorage.getItem('apr-theme') === 'light') document.documentElement.classList.add('light'); } catch (e) {}
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style id="tailwind-build">*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.pointer-events-none{pointer-events:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0}.left-1{left:.25rem}.left-1\/2{left:50%}.top-0{top:0}.z-30{z-index:30}.z-40{z-index:40}.mx-auto{margin-left:auto;margin-right:auto}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mt-3{margin-top:.75rem}.inline{display:inline}.flex{display:flex}.table{display:table}.grid{display:grid}.hidden{display:none}.\!h-9{height:2.25rem!important}.h-16{height:4rem}.h-2{height:.5rem}.h-2\.5{height:.625rem}.h-4{height:1rem}.h-\[70dvh\]{height:70dvh}.h-full{height:100%}.min-h-0{min-height:0}.min-h-screen{min-height:100vh}.\!w-9{width:2.25rem!important}.w-0{width:0}.w-1{width:.25rem}.w-1\/3{width:33.333333%}.w-16{width:4rem}.w-2{width:.5rem}.w-4{width:1rem}.w-9{width:2.25rem}.w-full{width:100%}.min-w-0{min-width:0}.min-w-\[64px\]{min-width:64px}.max-w-7xl{max-width:80rem}.max-w-\[180px\]{max-width:180px}.max-w-prose{max-width:65ch}.max-w-sm{max-width:24rem}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.-translate-x-1{--tw-translate-x:-0.25rem}.-translate-x-1,.-translate-x-1\/2{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.-translate-x-1\/2{--tw-translate-x:-50%}.rotate-180{--tw-rotate:180deg}.rotate-180,.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.resize{resize:both}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.flex-col{flex-direction:column}.place-items-center{place-items:center}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:.25rem}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-5{gap:1.25rem}.gap-6{gap:1.5rem}.space-x-3>:not([hidden])~:not([hidden]){--tw-space-x-reverse:0;margin-right:calc(.75rem*var(--tw-space-x-reverse));margin-left:calc(.75rem*(1 - var(--tw-space-x-reverse)))}.space-y-1>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.25rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.25rem*var(--tw-space-y-reverse))}.space-y-1\.5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.375rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.375rem*var(--tw-space-y-reverse))}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.75rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem*var(--tw-space-y-reverse))}.space-y-4>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem*var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-dashed{border-style:dashed}.border-blue-500{--tw-border-opacity:1;border-color:rgb(59 130 246/var(--tw-border-opacity,1))}.border-blue-500\/30{border-color:rgba(59,130,246,.3)}.border-slate-600{--tw-border-opacity:1;border-color:rgb(var(--s600)/var(--tw-border-opacity,1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(var(--s700)/var(--tw-border-opacity,1))}.border-slate-700\/60{border-color:rgb(var(--s700)/.6)}.border-slate-700\/80{border-color:rgb(var(--s700)/.8)}.border-slate-800{--tw-border-opacity:1;border-color:rgb(var(--s800)/var(--tw-border-opacity,1))}.bg-blue-500{--tw-bg-opacity:1;background-color:rgb(59 130 246/var(--tw-bg-opacity,1))}.bg-blue-600{--tw-bg-opacity:1;background-color:rgb(37 99 235/var(--tw-bg-opacity,1))}.bg-blue-600\/20{background-color:rgba(37,99,235,.2)}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129/var(--tw-bg-opacity,1))}.bg-red-500{--tw-bg-opacity:1;background-color:rgb(239 68 68/var(--tw-bg-opacity,1))}.bg-slate-500{--tw-bg-opacity:1;background-color:rgb(var(--s500)/var(--tw-bg-opacity,1))}.bg-slate-700{--tw-bg-opacity:1;background-color:rgb(var(--s700)/var(--tw-bg-opacity,1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(var(--s800)/var(--tw-bg-opacity,1))}.bg-slate-800\/90{background-color:rgb(var(--s800)/.9)}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(var(--s900)/var(--tw-bg-opacity,1))}.bg-slate-900\/50{background-color:rgb(var(--s900)/.5)}.bg-slate-900\/60{background-color:rgb(var(--s900)/.6)}.bg-slate-900\/70{background-color:rgb(var(--s900)/.7)}.bg-slate-900\/80{background-color:rgb(var(--s900)/.8)}.bg-slate-900\/90{background-color:rgb(var(--s900)/.9)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(var(--s950)/var(--tw-bg-opacity,1))}.bg-slate-950\/90{background-color:rgb(var(--s950)/.9)}.bg-yellow-500{--tw-bg-opacity:1;background-color:rgb(234 179 8/var(--tw-bg-opacity,1))}.p-1{padding:.25rem}.p-1\.5{padding:.375rem}.p-2{padding:.5rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-2\.5{padding-top:.625rem;padding-bottom:.625rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.pb-28{padding-bottom:7rem}.pr-2{padding-right:.5rem}.pt-3{padding-top:.75rem}.pt-5{padding-top:1.25rem}.text-center{text-align:center}.text-right{text-align:right}.font-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace}.font-sans{font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.italic{font-style:italic}.leading-tight{line-height:1.25}.text-blue-400{--tw-text-opacity:1;color:rgb(96 165 250/var(--tw-text-opacity,1))}.text-slate-100{--tw-text-opacity:1;color:rgb(var(--s100)/var(--tw-text-opacity,1))}.text-slate-200{--tw-text-opacity:1;color:rgb(var(--s200)/var(--tw-text-opacity,1))}.text-slate-300{--tw-text-opacity:1;color:rgb(var(--s300)/var(--tw-text-opacity,1))}.text-slate-400{--tw-text-opacity:1;color:rgb(var(--s400)/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(var(--s500)/var(--tw-text-opacity,1))}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.accent-blue-500{accent-color:#3b82f6}.opacity-0{opacity:0}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgba(0,0,0,.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color)}.shadow-2xl,.shadow-xl{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color),0 8px 10px -6px var(--tw-shadow-color)}.outline{outline-style:solid}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.duration-300{transition-duration:.3s}.hover\:border-blue-500:hover{--tw-border-opacity:1;border-color:rgb(59 130 246/var(--tw-border-opacity,1))}.hover\:bg-slate-800:hover{--tw-bg-opacity:1;background-color:rgb(var(--s800)/var(--tw-bg-opacity,1))}.hover\:text-red-400:hover{--tw-text-opacity:1;color:rgb(248 113 113/var(--tw-text-opacity,1))}.hover\:text-slate-300:hover{--tw-text-opacity:1;color:rgb(var(--s300)/var(--tw-text-opacity,1))}.focus\:border-blue-500:focus{--tw-border-opacity:1;border-color:rgb(59 130 246/var(--tw-border-opacity,1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus-visible\:outline:focus-visible{outline-style:solid}.focus-visible\:outline-2:focus-visible{outline-width:2px}.focus-visible\:outline-blue-500:focus-visible{outline-color:#3b82f6}.disabled\:opacity-40:disabled{opacity:.4}@media (min-width:640px){.sm\:block{display:block}.sm\:p-6{padding:1.5rem}.sm\:p-8{padding:2rem}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}}@media (min-width:1024px){.lg\:sticky{position:sticky}.lg\:top-20{top:5rem}.lg\:col-span-5{grid-column:span 5/span 5}.lg\:col-span-7{grid-column:span 7/span 7}.lg\:col-start-1{grid-column-start:1}.lg\:col-start-6{grid-column-start:6}.lg\:row-span-2{grid-row:span 2/span 2}.lg\:row-start-1{grid-row-start:1}.lg\:h-\[calc\(100vh-7rem\)\]{height:calc(100vh - 7rem)}.lg\:grid-cols-12{grid-template-columns:repeat(12,minmax(0,1fr))}.lg\:p-8{padding:2rem}.lg\:px-8{padding-left:2rem;padding-right:2rem}}</style>
+  <style>
+    :root{--s50:248 250 252;--s100:241 245 249;--s200:226 232 240;--s300:203 213 225;--s400:148 163 184;--s500:100 116 139;--s600:71 85 105;--s700:51 65 85;--s800:30 41 59;--s900:15 23 42;--s950:2 6 23;--mathc:#a5b4fc;--bg:#000}
+    html.light{--s50:2 6 23;--s100:15 23 42;--s200:30 41 59;--s300:51 65 85;--s400:71 85 105;--s500:100 116 139;--s600:148 163 184;--s700:203 213 225;--s800:226 232 240;--s900:241 245 249;--s950:248 250 252;--mathc:#4338ca;--bg:rgb(241 245 249)}
+    html, body { background: var(--bg); }
+    html.light .text-blue-400 { color: #2563eb; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: rgb(var(--s900)); }
+    ::-webkit-scrollbar-thumb { background: rgb(var(--s700)); border-radius: 4px; }
+    #reader { touch-action: pan-y pinch-zoom; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+    #text-content { user-select: text; -webkit-user-select: text; line-height: 1.8; }
+    .sentence-span { cursor: pointer; border-radius: 4px; transition: background-color .15s; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+    .sentence-span:hover { background: rgb(var(--s400) / .25); }
+    .highlight-active { background: rgba(59,130,246,.4) !important; box-shadow: 0 0 0 2px rgba(59,130,246,.4); }
+    pre.code { background: rgb(var(--s950)); border: 1px solid rgb(var(--s700)); border-radius: 10px; padding: 12px 14px; overflow-x: auto; font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: rgb(var(--s300)); margin: 0 0 1.1rem; tab-size: 4; }
+    .math { font: italic 15px/1.6 "Cambria Math", "STIX Two Math", Georgia, serif; color: var(--mathc); background: rgba(99,102,241,.08); border-left: 3px solid #6366f1; padding: 8px 12px; margin: 0 0 1.1rem; border-radius: 6px; overflow-x: auto; white-space: pre-wrap; }
+    .fb { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; color: rgb(var(--s200)); transition: background .15s, transform .1s; }
+    .fb:hover:not(:disabled) { background: rgb(var(--s700)); }
+    .fb:active:not(:disabled) { transform: scale(.92); }
+    .fb:focus-visible, .seg:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+    .fb:disabled { opacity: .3; }
+    .fb.main { width: 52px; height: 52px; border-radius: 16px; background: #2563eb; color: #fff; }
+    .fb.main:hover:not(:disabled) { background: #3b82f6; }
+    .seg { padding: 4px 10px; border-radius: 8px; font-size: 12px; color: rgb(var(--s400)); }
+    .seg[aria-pressed="true"] { background: #2563eb; color: #fff; }
+    .ico { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans antialiased text-slate-100">
+
+  <header class="border-b border-slate-800 bg-slate-950/90 backdrop-blur sticky top-0 z-30 flex-shrink-0">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center space-x-3 min-w-0">
+        <div class="p-2 bg-blue-600/20 text-blue-400 rounded-lg border border-blue-500/30 flex-shrink-0"><i data-ic="book"></i></div>
+        <div class="truncate">
+          <h1 class="font-bold text-lg leading-tight truncate">AudioPDF Reader</h1>
+          <p class="text-xs text-slate-400 hidden sm:block">Lector de PDF a voz · el archivo no sale de tu navegador</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 flex-shrink-0 min-w-0">
+      <button id="btn-theme" class="fb !w-9 !h-9 flex-shrink-0" aria-label="Cambiar tema"></button>
+      <div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700 flex-shrink-0" role="status" aria-live="polite">
+        <span class="w-2 h-2 rounded-full bg-slate-500" id="status-indicator"></span>
+        <span id="status-text">Esperando documento...</span>
+      </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 pb-28 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+    <!-- Carga -->
+    <section class="lg:col-span-5 lg:col-start-1 bg-slate-800/90 border border-slate-700 rounded-2xl p-5 shadow-xl">
+      <h2 class="text-sm font-semibold text-slate-300 mb-3">Cargar documento</h2>
+      <div id="drop-zone" class="relative border-2 border-dashed border-slate-600 hover:border-blue-500 bg-slate-900/60 rounded-xl p-6 text-center cursor-pointer transition-colors flex flex-col items-center">
+        <input type="file" id="pdf-input" accept="application/pdf,.pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" aria-label="Seleccionar PDF">
+        <div class="p-3 bg-slate-800 text-slate-400 rounded-full mb-3 pointer-events-none"><i data-ic="upload"></i></div>
+        <p class="text-sm font-medium pointer-events-none">Haz clic o arrastra un PDF aquí</p>
+      </div>
+      <div id="file-info" class="hidden mt-3 p-3 bg-slate-900/80 rounded-xl border border-slate-700/60 flex items-center justify-between">
+        <span id="file-name" class="text-xs font-medium text-slate-200 truncate pr-2">documento.pdf</span>
+        <button id="btn-change-file" class="text-xs text-slate-400 hover:text-red-400 p-1.5 hover:bg-slate-800 rounded-lg flex items-center gap-1 flex-shrink-0"><i data-ic="x" class="sm"></i><span>Quitar</span></button>
+      </div>
+    </section>
+
+    <!-- Lector -->
+    <section class="lg:col-span-7 lg:col-start-6 lg:row-start-1 lg:row-span-2 bg-slate-800/90 border border-slate-700 rounded-2xl shadow-xl flex flex-col h-[70dvh] lg:h-[calc(100vh-7rem)] lg:sticky lg:top-20 overflow-hidden">
+      <div class="px-4 py-3 border-b border-slate-700/80 bg-slate-900/50 flex items-center justify-between gap-3 flex-shrink-0">
+        <div class="flex gap-1 bg-slate-800 p-1 rounded-lg" role="group" aria-label="Vista">
+          <button id="view-text" class="seg" aria-pressed="true">Texto</button>
+          <button id="view-page" class="seg" aria-pressed="false">Página original</button>
+        </div>
+        <div class="flex items-center gap-2 w-1/3 max-w-[180px]">
+          <div id="progress-wrap" class="w-full bg-slate-700 h-2.5 rounded-full overflow-hidden cursor-pointer" title="Clic para saltar dentro de la página"><div id="progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-300"></div></div>
+          <span id="progress-text" class="text-xs font-mono text-slate-400 w-9 text-right">0%</span>
+        </div>
+      </div>
+      <div id="reader" class="flex-1 p-5 sm:p-8 overflow-y-auto text-slate-200 text-base sm:text-lg">
+        <div id="empty-state" class="h-full flex items-center justify-center text-center text-slate-500 p-4">
+          <p class="text-sm max-w-sm">Sube un PDF para empezar. Toca una frase para marcar dónde empezar; desliza a los lados para cambiar de página.</p>
+        </div>
+        <article id="text-content" class="hidden max-w-prose mx-auto"></article>
+        <div id="page-view" class="hidden justify-center"></div>
+      </div>
+      <div class="px-5 py-2.5 bg-slate-900/70 border-t border-slate-700/60 flex items-center justify-between text-xs text-slate-400 flex-shrink-0">
+        <span class="truncate pr-2">Toca una frase para fijar el punto de inicio · ← → cambian de página · Espacio = play/pausa</span>
+        <span id="char-count" class="font-mono flex-shrink-0">0 car.</span>
+      </div>
+    </section>
+
+    <!-- Ajustes -->
+    <section class="lg:col-span-5 lg:col-start-1 bg-slate-800/90 border border-slate-700 rounded-2xl p-5 shadow-xl">
+      <button id="btn-settings" aria-expanded="true" aria-controls="settings-body" class="flex items-center justify-between w-full text-sm font-semibold text-slate-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500 rounded-lg">
+        <span>Ajustes de lectura</span>
+        <svg id="settings-chev" class="ico transition-transform duration-300" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div id="settings-wrap" class="grid" style="grid-template-rows:1fr;transition:grid-template-rows .3s ease">
+      <div id="settings-body" class="overflow-hidden min-h-0"><div class="flex flex-col gap-5 pt-5">
+
+      <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-700/60 flex items-center justify-between text-xs">
+        <span class="text-slate-400">Página</span>
+        <div class="flex items-center gap-1.5">
+          <button id="btn-prev-page" disabled class="fb !w-9 !h-9" aria-label="Página anterior"></button>
+          <input type="number" id="page-input" min="1" value="1" disabled inputmode="numeric" aria-label="Número de página" class="w-16 bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-center font-mono focus:outline-none focus:border-blue-500 disabled:opacity-40">
+          <span class="text-slate-400">de <span id="total-pages" class="font-mono text-slate-200">0</span></span>
+          <button id="btn-next-page" disabled class="fb !w-9 !h-9" aria-label="Página siguiente"></button>
+        </div>
+      </div>
+
+      <div class="space-y-1.5">
+        <label for="voice-select" class="text-xs font-medium text-slate-400">Voz del sistema</label>
+        <select id="voice-select" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-blue-500 cursor-pointer"><option value="">Automática (según el idioma)</option></select>
+        <p id="voice-hint" class="hidden text-xs text-slate-500">Para voces mucho más naturales en iPhone: Ajustes › Accesibilidad › Contenido hablado › Voces › descarga una "Mejorada" o "Premium". Luego reabre esta página.</p>
+      </div>
+
+      <div class="space-y-4">
+        <div class="space-y-1"><div class="flex justify-between text-xs"><label for="rate-range" class="text-slate-400">Velocidad</label><span id="rate-value" class="font-mono text-blue-400 font-semibold">1.0x</span></div>
+          <input type="range" id="rate-range" min="0.5" max="2" step="0.1" value="1" class="w-full accent-blue-500 cursor-pointer"></div>
+        <div class="space-y-1"><div class="flex justify-between text-xs"><label for="pitch-range" class="text-slate-400">Tono</label><span id="pitch-value" class="font-mono text-blue-400 font-semibold">1.0</span></div>
+          <input type="range" id="pitch-range" min="0.5" max="1.5" step="0.1" value="1" class="w-full accent-blue-500 cursor-pointer"></div>
+        <div class="space-y-1"><div class="flex justify-between text-xs"><label for="volume-range" class="text-slate-400">Volumen</label><span id="volume-value" class="font-mono text-blue-400 font-semibold">100%</span></div>
+          <input type="range" id="volume-range" min="0" max="1" step="0.05" value="1" class="w-full accent-blue-500 cursor-pointer"></div>
+        <div class="space-y-1"><div class="flex justify-between text-xs"><label for="font-range" class="text-slate-400">Tamaño de letra</label><span id="font-value" class="font-mono text-blue-400 font-semibold">18 px</span></div>
+          <input type="range" id="font-range" min="14" max="34" step="1" value="18" class="w-full accent-blue-500 cursor-pointer"></div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-700/60 space-y-3">
+        <label class="flex items-center justify-between text-xs text-slate-400 cursor-pointer">Avanzar de página automáticamente
+          <input type="checkbox" id="auto-next" checked class="w-4 h-4 accent-blue-500"></label>
+        <label class="flex items-center justify-between text-xs text-slate-400 cursor-pointer">Leer en voz alta el código
+          <input type="checkbox" id="read-code" class="w-4 h-4 accent-blue-500"></label>
+      </div>
+      </div></div></div>
+    </section>
+  </main>
+
+  <!-- Menú flotante -->
+  <nav id="float-bar" class="hidden fixed left-1/2 -translate-x-1/2 z-40 items-center gap-1 rounded-2xl border border-slate-600 bg-slate-900/90 backdrop-blur px-2 py-2 shadow-2xl" style="bottom:calc(env(safe-area-inset-bottom,0px) + 12px)" aria-label="Controles de lectura">
+    <div id="bar-grip" class="grid place-items-center text-slate-500 hover:text-slate-300" style="width:26px;height:44px;cursor:grab;touch-action:none;-webkit-user-select:none;user-select:none" title="Arrastra para mover · doble toque para volver al centro" aria-hidden="true">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor"><circle cx="9" cy="5" r="1.7"/><circle cx="15" cy="5" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="19" r="1.7"/><circle cx="15" cy="19" r="1.7"/></svg>
+    </div>
+    <button id="fb-prev-page" class="fb" title="Página anterior" aria-label="Página anterior"></button>
+    <button id="fb-prev-para" class="fb" title="Párrafo anterior" aria-label="Párrafo anterior"></button>
+    <button id="fb-play" class="fb main" title="Reproducir / Pausar (Espacio)" aria-label="Reproducir"></button>
+    <button id="fb-stop" class="fb" title="Detener" aria-label="Detener"></button>
+    <button id="fb-next-para" class="fb" title="Párrafo siguiente" aria-label="Párrafo siguiente"></button>
+    <button id="fb-next-page" class="fb" title="Página siguiente" aria-label="Página siguiente"></button>
+    <span id="bar-page" class="hidden sm:block px-2 text-xs font-mono text-slate-400 min-w-[64px] text-center"></span>
+  </nav>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const $ = id => document.getElementById(id);
+const synth = window.speechSynthesis;
+
+/* ---------- Iconos (SVG inline: no dependen de CDN ni se pierden al cambiar) ---------- */
+const ICONS = {
+  play: '<polygon points="6 3 20 12 6 21 6 3"/>',
+  pause: '<rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/>',
+  stop: '<rect x="5" y="5" width="14" height="14" rx="2"/>',
+  pageprev: '<path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/>',
+  pagenext: '<path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/>',
+  paraprev: '<polygon points="19 20 9 12 19 4 19 20"/><line x1="5" x2="5" y1="19" y2="5"/>',
+  paranext: '<polygon points="5 4 15 12 5 20 5 4"/><line x1="19" x2="19" y1="5" y2="19"/>',
+  book: '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+  upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/>',
+  x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+  moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>'
+};
+const svg = (n, s = 22) => `<svg class="ico" style="width:${s}px;height:${s}px" viewBox="0 0 24 24" aria-hidden="true">${ICONS[n]}</svg>`;
+document.querySelectorAll('[data-ic]').forEach(e => e.outerHTML = svg(e.dataset.ic, e.classList.contains('sm') ? 16 : 24));
+const setIcon = (id, n) => $(id).innerHTML = svg(n);
+[['btn-prev-page','pageprev'],['btn-next-page','pagenext'],['fb-prev-page','pageprev'],['fb-next-page','pagenext'],
+ ['fb-prev-para','paraprev'],['fb-next-para','paranext'],['fb-stop','stop'],['fb-play','play']].forEach(a => setIcon(...a));
+
+/* ---------- Estado ---------- */
+let pdfDoc = null, page = 1, total = 0;
+let units = [], starts = [];          // unidades de voz y comienzo de cada párrafo
+let idx = 0;                          // unidad actual
+let state = 'idle';                   // idle | playing | paused
+let speakToken = 0, loadToken = 0;    // invalidan callbacks viejos (evita carreras)
+let pageLang = 'en', voices = [], currentUtterance = null, view = 'text', renderTask = null;
+
+const reader = $('reader'), textDiv = $('text-content'), pageView = $('page-view'), emptyState = $('empty-state');
+const ctl = ['btn-prev-page','btn-next-page','page-input','fb-prev-page','fb-next-page','fb-prev-para','fb-next-para','fb-play','fb-stop'];
+const setEnabled = on => { ctl.forEach(i => $(i).disabled = !on); $('float-bar').classList.toggle('hidden', !on); $('float-bar').classList.toggle('flex', on); if (on) restoreBar(); };
+
+function updateStatus(t, c) { $('status-text').textContent = t; $('status-indicator').className = `w-2 h-2 rounded-full ${c}`; }
+
+function setState(s) {
+  state = s; keepAwake(s === 'playing');
+  setIcon('fb-play', s === 'playing' ? 'pause' : 'play');
+  $('fb-play').setAttribute('aria-label', s === 'playing' ? 'Pausar' : 'Reproducir');
+  if (!pdfDoc) return;
+  if (s === 'playing') updateStatus(`Leyendo página ${page}...`, 'bg-emerald-500');
+  else if (s === 'paused') updateStatus('En pausa', 'bg-yellow-500');
+  else updateStatus('Listo para leer', 'bg-emerald-500');
+}
+
+/* ---------- Preferencias, tema y memoria por libro ---------- */
+const store = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+let bookKey = null, bookPrefs = {};
+const prefs = Object.assign({ font: 18, pitch: 1, volume: 1, auto: true, readCode: false, voice: '', rate: 1 }, store.get('apr-prefs'));
+function syncLabels() {
+  $('rate-value').textContent = (+$('rate-range').value).toFixed(1) + 'x'; $('pitch-value').textContent = (+$('pitch-range').value).toFixed(1);
+  $('volume-value').textContent = Math.round($('volume-range').value * 100) + '%'; $('font-value').textContent = $('font-range').value + ' px';
+  textDiv.style.fontSize = $('font-range').value + 'px';
+}
+function applyPrefs(p) {
+  $('rate-range').value = p.rate; $('pitch-range').value = p.pitch; $('volume-range').value = p.volume; $('font-range').value = p.font;
+  $('auto-next').checked = p.auto; $('read-code').checked = p.readCode;
+  $('voice-select').value = [...$('voice-select').options].some(o => o.value === p.voice) ? p.voice : '';
+  syncLabels();
+}
+function savePrefs() {
+  const p = { font: +$('font-range').value, pitch: +$('pitch-range').value, volume: +$('volume-range').value, auto: $('auto-next').checked, readCode: $('read-code').checked, voice: $('voice-select').value, rate: +$('rate-range').value };
+  Object.assign(prefs, p); store.set('apr-prefs', p);
+  if (bookKey) store.set(bookKey, { page, idx, voice: p.voice, rate: p.rate });   // por libro: página, frase, voz y velocidad
+}
+['rate-range', 'pitch-range', 'volume-range', 'font-range', 'voice-select', 'auto-next', 'read-code'].forEach(id => ['input', 'change'].forEach(ev => $(id).addEventListener(ev, () => { syncLabels(); savePrefs(); })));
+function applyTheme(light) {
+  document.documentElement.classList.toggle('light', light);
+  try { localStorage.setItem('apr-theme', light ? 'light' : 'dark'); } catch (e) {}
+  setIcon('btn-theme', light ? 'moon' : 'sun');
+  const t = light ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro';
+  $('btn-theme').title = t; $('btn-theme').setAttribute('aria-label', t);
+}
+$('btn-theme').onclick = () => applyTheme(!document.documentElement.classList.contains('light'));
+applyTheme(document.documentElement.classList.contains('light'));
+applyPrefs(prefs);
+
+/* ---------- Idioma y voz automática ---------- */
+const EN_W = /\b(the|and|of|to|is|in|that|it|with|for|as|was|are|this|which|be|on)\b/gi, ES_W = /\b(el|la|de|que|y|en|los|las|un|una|por|con|para|es|se|del|al|su)\b/gi;
+const detectLang = t => (t.match(ES_W) || []).length > (t.match(EN_W) || []).length ? 'es' : 'en';
+function pickVoice() {
+  const chosen = voices.find(v => v.name === $('voice-select').value); if (chosen) return chosen;
+  const score = v => (/premium|enhanced|natural|neural|google/i.test(v.name) ? 2 : 0) + (v.default ? 1 : 0) + (v.lang.toLowerCase() === navigator.language.toLowerCase() ? 1 : 0) + (pageLang === 'en' && /en[-_]US/i.test(v.lang) ? 1 : 0);
+  return voices.filter(v => v.lang.toLowerCase().startsWith(pageLang)).sort((a, b) => score(b) - score(a))[0] || null;
+}
+
+/* ---------- Voces ---------- */
+const Q = v => /premium|enhanced|natural|neural|google/i.test(v.name) ? 1 : 0;
+function populateVoices() {
+  voices = synth.getVoices();
+  if (!voices.length) return;
+  const sel = $('voice-select'); sel.innerHTML = '<option value="">Automática (según el idioma)</option>';
+  const group = (label, list) => { if (!list.length) return; const g = document.createElement('optgroup'); g.label = label;
+    [...list].sort((x, y) => Q(y) - Q(x)).forEach(v => { const o = document.createElement('option'); o.value = v.name; o.textContent = `${v.name} (${v.lang})`; g.appendChild(o); }); sel.appendChild(g); };
+  const es = voices.filter(v => v.lang.toLowerCase().startsWith('es'));
+  const en = voices.filter(v => v.lang.toLowerCase().startsWith('en'));
+  group('English voices', en); group('Voces en español', es); group('Otros idiomas', voices.filter(v => !es.includes(v) && !en.includes(v)));
+  applyPrefs(Object.assign({}, prefs, bookPrefs));
+  const ios = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  $('voice-hint').classList.toggle('hidden', !(ios && !voices.some(v => /enhanced|premium/i.test(v.name))));
+}
+if (!('speechSynthesis' in window)) updateStatus('Tu navegador no soporta voz (TTS)', 'bg-red-500');
+else { populateVoices(); synth.onvoiceschanged = populateVoices; }
+
+/* ---------- Carga del PDF ---------- */
+const dz = $('drop-zone');
+['dragover', 'drop'].forEach(ev => window.addEventListener(ev, e => e.preventDefault())); // evita que el navegador abra el PDF
+dz.addEventListener('dragover', () => dz.classList.add('border-blue-500'));
+dz.addEventListener('dragleave', () => dz.classList.remove('border-blue-500'));
+dz.addEventListener('drop', e => { dz.classList.remove('border-blue-500'); if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]); });
+$('pdf-input').addEventListener('change', e => e.target.files[0] && handleFile(e.target.files[0]));
+$('btn-change-file').addEventListener('click', resetApp);
+
+async function handleFile(file) {
+  if (file.type !== 'application/pdf' && !/\.pdf$/i.test(file.name)) return alert('Selecciona un archivo PDF válido.');
+  try {
+    updateStatus('Cargando PDF...', 'bg-yellow-500');
+    const data = new Uint8Array(await file.arrayBuffer());
+    if (pdfDoc) pdfDoc.destroy();
+    pdfDoc = await pdfjsLib.getDocument({ data }).promise;
+    total = pdfDoc.numPages; $('total-pages').textContent = total; $('page-input').max = total;
+    $('file-name').textContent = file.name; dz.classList.add('hidden'); $('file-info').classList.remove('hidden');
+    setEnabled(true);
+    bookKey = 'apr-book:' + file.name + ':' + total;
+    const saved = store.get(bookKey) || {}; bookPrefs = {};
+    if (saved.voice !== undefined) bookPrefs.voice = saved.voice;
+    if (saved.rate) bookPrefs.rate = saved.rate;
+    applyPrefs(Object.assign({}, prefs, bookPrefs));
+    await goToPage(saved.page || 1);
+    if (saved.idx > 0 && saved.idx < units.length) { idx = saved.idx; mark(idx); updateProgress(); }
+    if (saved.page > 1) updateStatus(`Retomado en la página ${page}`, 'bg-emerald-500');
+  } catch (err) {
+    console.error(err); pdfDoc = null;
+    updateStatus('Error al leer PDF', 'bg-red-500');
+    alert(err && err.name === 'PasswordException' ? 'El PDF está protegido con contraseña.' : 'No se pudo procesar el PDF.');
+  }
+}
+
+/* ---------- Extracción de texto con estructura (párrafos / código / fórmulas) ---------- */
+function extractBlocks(tc) {
+  const st = tc.styles || {}, lines = []; let cur = null;
+  for (const it of tc.items) {
+    if (it.str === undefined) continue;
+    const x = it.transform[4], y = it.transform[5], h = Math.abs(it.height) || Math.abs(it.transform[3]) || 10;
+    const mono = /mono|courier|consol|menlo|code/i.test((st[it.fontName] || {}).fontFamily || '') || /mono|courier|consol/i.test(it.fontName || '');
+    if (!cur || Math.abs(y - cur.y) > h * 0.5) { cur = { y, x, h, mono, s: '', end: x }; lines.push(cur); }
+    else if (it.str.trim() && cur.s && x - cur.end > h * 0.2 && !/\s$/.test(cur.s) && !/^\s/.test(it.str)) cur.s += ' ';
+    cur.s += it.str; cur.end = x + (it.width || 0);
+    if (it.str.trim()) cur.mono = cur.mono && mono;
+  }
+  const L = lines.filter(l => l.s.trim());
+  const prose = L.filter(l => !l.mono), left = prose.length ? Math.min(...prose.map(l => l.x)) : 0;
+  const blocks = []; let b = null, prev = null;
+  for (const l of L) {
+    const gap = prev ? prev.y - l.y : 0;
+    if (l.mono) {
+      if (!b || b.type !== 'code' || gap > l.h * 2.2) { b = { type: 'code', lines: [] }; blocks.push(b); }
+      b.lines.push(l);
+    } else {
+      const t = l.s.replace(/\s+/g, ' ').trim();
+      const np = !b || b.type !== 'p' || gap > l.h * 1.55 || gap < -l.h || (l.x - left > l.h * 0.8 && /[.!?:]["»”)]*$/.test(b.text));
+      if (np) { b = { type: 'p', text: t }; blocks.push(b); }
+      else if (/[-‐]$/.test(b.text) && /^[a-záéíóúñ]/.test(t)) b.text = b.text.slice(0, -1) + t;
+      else b.text += ' ' + t;
+    }
+    prev = l;
+  }
+  const out = [];
+  for (const k of blocks) {
+    if (k.type === 'code') {
+      const minX = Math.min(...k.lines.map(l => l.x)), cw = k.lines[0].h * 0.6;
+      out.push({ type: 'code', text: k.lines.map(l => ' '.repeat(Math.max(0, Math.round((l.x - minX) / cw))) + l.s.replace(/\s+$/, '')).join('\n') });
+    } else {
+      const t = k.text, letters = (t.match(/[A-Za-zÁ-ÿ]/g) || []).length, sym = (t.match(/[=+\-*/^∑∫√≤≥≈≠±∂∞∏→←⇒∈∉∪∩×÷α-ωΔΣΩ]/g) || []).length;
+      if (/^\d{1,4}$/.test(t)) continue;                                   // número de página suelto
+      out.push({ type: t.length < 200 && sym >= 2 && letters / t.length < 0.6 ? 'math' : 'p', text: t });
+    }
+  }
+  return out;
+}
+
+const ABBR = /(?:^|\s)(?:dr|dra|sr|sra|srta|ud|uds|etc|vs|fig|cap|pág|pp|núm|av|prof|ing|lic|ej|[A-ZÁÉÍÓÚÑ])$/i;
+function splitSentences(text) {
+  const marked = text.replace(/([.!?…]+["'»”)\]]*)\s+(?=[¿¡"«“(\[A-ZÁÉÍÓÚÑ0-9])/g, (m, p, off, str) =>
+    p[0] === '.' && ABBR.test(str.slice(Math.max(0, off - 8), off)) ? m : p + '\u0001');
+  const out = [];
+  marked.split('\u0001').map(s => s.trim()).filter(Boolean).forEach(s => {   // trocea frases largas (Chrome corta voces con textos largos)
+    if (s.length <= 240) return out.push(s);
+    let cur = '';
+    s.replace(/([,;:])\s+/g, '$1\u0002').split('\u0002').forEach(p => { if (cur && (cur + ' ' + p).length > 200) { out.push(cur); cur = p; } else cur = cur ? cur + ' ' + p : p; });
+    if (cur) out.push(cur);
+  });
+  return out.flatMap(s => s.length > 300 ? s.match(/.{1,240}(\s|$)/g).map(x => x.trim()) : [s]);
+}
+
+async function loadPage(n) {
+  updateStatus(`Cargando página ${n}...`, 'bg-yellow-500');
+  const pg = await pdfDoc.getPage(n);
+  const blocks = extractBlocks(await pg.getTextContent());
+  const sample = blocks.filter(b => b.type === 'p').map(b => b.text).join(' ');
+  if (sample.length > 80) pageLang = detectLang(sample);
+  units = []; starts = []; textDiv.innerHTML = '';
+  let chars = 0;
+  blocks.forEach(b => {
+    if (b.type === 'code' || b.type === 'math') {
+      const el = document.createElement(b.type === 'code' ? 'pre' : 'div');
+      el.className = b.type === 'code' ? 'code' : 'math';
+      if (b.type === 'code') { const c = document.createElement('code'); c.textContent = b.text; el.appendChild(c); } else el.textContent = b.text;
+      textDiv.appendChild(el);
+      if (b.type === 'code' && $('read-code').checked) addUnits(el, [b.text.replace(/\s+/g, ' ')], true);
+      return;
+    }
+    chars += b.text.length;
+    const p = document.createElement('p'); p.className = 'mb-4'; textDiv.appendChild(p);
+    addUnits(p, splitSentences(b.text), true);
+  });
+  $('char-count').textContent = `${chars} car. · ${pageLang.toUpperCase()}`;
+  emptyState.classList.toggle('hidden', blocks.length > 0 || view === 'page');
+  if (!blocks.length) emptyState.querySelector('p').textContent = 'Esta página no tiene texto seleccionable (puede ser un escaneo o una imagen). Prueba la vista "Página original".';
+  textDiv.classList.toggle('hidden', view !== 'text' || !blocks.length);
+}
+function addUnits(parent, parts, newPara) {
+  parts.forEach((txt, k) => {
+    const i = units.length, span = document.createElement('span');
+    span.className = 'sentence-span'; span.textContent = txt + ' ';
+    span.addEventListener('click', () => { if (String(getSelection())) return; jumpTo(i); }); // si estás seleccionando texto, no hace nada
+    parent.appendChild(span); units.push({ text: txt, el: span });
+    if (newPara && k === 0) starts.push(i);
+  });
+}
+
+/* ---------- Vista "Página original" (ecuaciones, tablas y código tal cual) ---------- */
+async function renderCanvas() {
+  if (!pdfDoc || view !== 'page') return;
+  const t = loadToken, pg = await pdfDoc.getPage(page);
+  if (renderTask) { try { renderTask.cancel(); } catch (e) {} }
+  const dpr = window.devicePixelRatio || 1, base = pg.getViewport({ scale: 1 });
+  const sc = Math.min((reader.clientWidth - 40) / base.width, 2.5), vp = pg.getViewport({ scale: sc * dpr });
+  const cv = document.createElement('canvas'); cv.width = vp.width; cv.height = vp.height;
+  cv.style.cssText = `width:${vp.width / dpr}px;height:${vp.height / dpr}px;background:#fff;border-radius:6px;max-width:100%`;
+  renderTask = pg.render({ canvasContext: cv.getContext('2d'), viewport: vp });
+  try { await renderTask.promise; if (t === loadToken) pageView.replaceChildren(cv); } catch (e) { /* cancelado */ }
+}
+function setView(v) {
+  view = v;
+  $('view-text').setAttribute('aria-pressed', v === 'text'); $('view-page').setAttribute('aria-pressed', v === 'page');
+  textDiv.classList.toggle('hidden', v !== 'text' || !units.length && !textDiv.children.length);
+  pageView.classList.toggle('hidden', v !== 'page'); pageView.classList.toggle('flex', v === 'page');
+  emptyState.classList.toggle('hidden', !!pdfDoc);
+  reader.scrollTop = 0; if (v === 'page') renderCanvas();
+}
+$('view-text').onclick = () => setView('text'); $('view-page').onclick = () => setView('page');
+
+/* ---------- Voz ---------- */
+function haltSpeech() { speakToken++; synth.cancel(); }   // el token invalida cualquier onend pendiente → parada inmediata
+
+function speakUnit() {
+  const token = ++speakToken; synth.cancel();
+  if (idx >= units.length) return finishPage();
+  mark(idx); updateProgress();
+  const u = new SpeechSynthesisUtterance(units[idx].text), v = pickVoice();
+  if (v) { u.voice = v; u.lang = v.lang; } else u.lang = pageLang === 'en' ? 'en-US' : 'es-ES';
+  u.rate = +$('rate-range').value; u.pitch = +$('pitch-range').value; u.volume = +$('volume-range').value;
+  const next = () => { if (token !== speakToken || state !== 'playing') return; idx++; speakUnit(); };
+  u.onend = next;
+  u.onerror = e => { if (e.error === 'interrupted' || e.error === 'canceled') return; console.warn('TTS:', e.error); next(); };
+  currentUtterance = u;                                  // referencia viva: Chrome puede recolectar la utterance y no disparar onend
+  setTimeout(() => { if (token === speakToken) synth.speak(u); }, 30); // pequeño margen tras cancel() (Safari lo necesita)
+}
+function finishPage() {
+  if ($('auto-next').checked && page < total && state === 'playing') goToPage(page + 1, true);
+  else { haltSpeech(); idx = 0; setState('idle'); removeMark(); updateStatus('Lectura completada', 'bg-blue-500'); }
+}
+function play() { if (!units.length && !(page < total && $('auto-next').checked)) return; setState('playing'); speakUnit(); }
+function pause() { haltSpeech(); setState('paused'); }     // pausa fiable en todos los navegadores: se corta y se reanuda la frase
+function stop() { haltSpeech(); idx = 0; setState('idle'); removeMark(); updateProgress(); }
+const togglePlay = () => state === 'playing' ? pause() : play();
+
+function jumpTo(i) { idx = Math.max(0, Math.min(i, units.length - 1)); if (state === 'playing') speakUnit(); else { mark(idx); updateProgress(); } }
+function paraNext() {
+  const s = starts.find(v => v > idx);
+  if (s === undefined) { if (page < total) goToPage(page + 1, state === 'playing'); } else jumpTo(s);
+}
+function paraPrev() {
+  const le = starts.filter(v => v <= idx); let t = le[le.length - 1];
+  if (t === idx || t === undefined) t = le[le.length - 2];
+  if (t === undefined) { if (page > 1 && idx === 0) goToPage(page - 1, state === 'playing'); else jumpTo(0); } else jumpTo(t);
+}
+
+function mark(i) {
+  removeMark(); const el = units[i] && units[i].el; if (!el) return;
+  el.classList.add('highlight-active');
+  const r = el.getBoundingClientRect(), c = reader.getBoundingClientRect();
+  if (r.top < c.top + 40 || r.bottom > c.bottom - 40) reader.scrollTo({ top: reader.scrollTop + (r.top - c.top) - c.height / 3, behavior: 'smooth' });
+}
+function removeMark() { document.querySelectorAll('.highlight-active').forEach(e => e.classList.remove('highlight-active')); }
+function updateProgress() {
+  const p = units.length ? Math.round(idx / units.length * 100) : 0;
+  $('progress-bar').style.width = p + '%'; $('progress-text').textContent = p + '%'; savePrefs();
+}
+
+/* ---------- Navegación de páginas ---------- */
+async function goToPage(n, autoplay = false) {
+  if (!pdfDoc || n < 1 || n > total) { $('page-input').value = page; return; }
+  const t = ++loadToken; haltSpeech(); page = n;
+  $('page-input').value = n; $('bar-page').textContent = `${n} / ${total}`;
+  try {
+    await loadPage(n);
+    if (t !== loadToken) return;                       // otra navegación más reciente ganó
+    idx = 0; updateProgress(); reader.scrollTop = 0;
+    renderCanvas();
+    if (autoplay) { setState('playing'); speakUnit(); } else { setState('idle'); updateStatus(`Página ${n} de ${total} lista`, 'bg-emerald-500'); }
+  } catch (err) { console.error(err); updateStatus('Error en la página', 'bg-red-500'); }
+}
+
+function resetApp() {
+  haltSpeech(); loadToken++; bookKey = null; bookPrefs = {};
+  if (pdfDoc) pdfDoc.destroy(); pdfDoc = null; units = []; starts = []; idx = 0; page = 1; total = 0;
+  setEnabled(false); setState('idle');
+  dz.classList.remove('hidden'); $('file-info').classList.add('hidden'); $('pdf-input').value = '';
+  $('page-input').value = 1; $('total-pages').textContent = '0'; $('char-count').textContent = '0 car.';
+  textDiv.innerHTML = ''; textDiv.classList.add('hidden'); pageView.replaceChildren(); emptyState.classList.remove('hidden');
+  emptyState.querySelector('p').textContent = 'Sube un PDF para empezar.'; updateProgress(); updateStatus('Esperando documento...', 'bg-slate-500');
+}
+
+/* ---------- Eventos ---------- */
+$('progress-wrap').addEventListener('click', e => { if (!units.length) return; const r = e.currentTarget.getBoundingClientRect(); jumpTo(Math.floor((e.clientX - r.left) / r.width * units.length)); });
+$('fb-play').onclick = togglePlay; $('fb-stop').onclick = stop;
+$('fb-next-para').onclick = paraNext; $('fb-prev-para').onclick = paraPrev;
+const pageGo = d => goToPage(page + d, state === 'playing');
+$('btn-prev-page').onclick = $('fb-prev-page').onclick = () => pageGo(-1);
+$('btn-next-page').onclick = $('fb-next-page').onclick = () => pageGo(1);
+$('page-input').addEventListener('change', e => goToPage(parseInt(e.target.value, 10), state === 'playing'));
+
+let rt; const restartSoon = () => { clearTimeout(rt); rt = setTimeout(() => state === 'playing' && speakUnit(), 250); };
+$('rate-range').addEventListener('input', e => { $('rate-value').textContent = (+e.target.value).toFixed(1) + 'x'; restartSoon(); });
+$('pitch-range').addEventListener('input', e => { $('pitch-value').textContent = (+e.target.value).toFixed(1); restartSoon(); });
+$('volume-range').addEventListener('input', e => { $('volume-value').textContent = Math.round(e.target.value * 100) + '%'; restartSoon(); });
+$('voice-select').addEventListener('change', restartSoon);
+$('read-code').addEventListener('change', () => pdfDoc && goToPage(page, false));
+
+// Deslizar para cambiar de página (táctil). Ignora gestos verticales, selección de texto y el borde izquierdo (gesto "atrás" de iOS)
+let tx = 0, ty = 0, tt = 0, tracking = false;
+reader.addEventListener('touchstart', e => { const t = e.touches[0]; tracking = e.touches.length === 1 && t.clientX > 24; tx = t.clientX; ty = t.clientY; tt = Date.now(); }, { passive: true });
+reader.addEventListener('touchend', e => {
+  if (!tracking || !pdfDoc) return; tracking = false;
+  const t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty;
+  if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.6 || Date.now() - tt > 700 || String(getSelection())) return;
+  pageGo(dx < 0 ? 1 : -1);
+}, { passive: true });
+
+// Atajos de teclado
+document.addEventListener('keydown', e => {
+  if (!pdfDoc || /INPUT|SELECT|TEXTAREA/.test(e.target.tagName) || e.metaKey || e.ctrlKey) return;
+  if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+  else if (e.key === 'ArrowRight') { e.preventDefault(); e.shiftKey ? paraNext() : pageGo(1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); e.shiftKey ? paraPrev() : pageGo(-1); }
+});
+/* ---------- Pantalla encendida y segundo plano (iPhone) ---------- */
+let wakeLock = null;
+async function keepAwake(on) {                 // evita que la pantalla se apague sola mientras lee (Safari iOS 16.4+, Chrome, Firefox)
+  try {
+    if (on && 'wakeLock' in navigator && !wakeLock) { wakeLock = await navigator.wakeLock.request('screen'); wakeLock.addEventListener('release', () => { wakeLock = null; }); }
+    else if (!on && wakeLock) { await wakeLock.release(); wakeLock = null; }
+  } catch (e) { wakeLock = null; }
+}
+const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && isIOS && state === 'playing') {   // iOS corta la voz en segundo plano: dejamos el estado real (pausa) en la misma frase
+    pause(); updateStatus('En pausa: iOS detiene la voz en segundo plano. Toca ▶ para seguir', 'bg-yellow-500');
+  } else if (!document.hidden && state === 'playing') keepAwake(true);
+});
+
+/* ---------- Menú flotante movible (arrastra el asa de la izquierda) ---------- */
+const bar = $('float-bar'), grip = $('bar-grip'), BAR_BOTTOM = 'calc(env(safe-area-inset-bottom,0px) + 12px)', M = 6;
+function putBar(x, y) { Object.assign(bar.style, { left: x + 'px', top: y + 'px', bottom: 'auto', transform: 'none' }); }
+function restoreBar() {                       // posición guardada como fracción de la pantalla: sobrevive a rotar el dispositivo
+  const p = store.get('apr-bar'); if (!p || !bar.offsetWidth) return;
+  putBar(M + p.fx * Math.max(0, innerWidth - bar.offsetWidth - 2 * M), M + p.fy * Math.max(0, innerHeight - bar.offsetHeight - 2 * M));
+}
+function resetBar() { Object.assign(bar.style, { left: '', top: '', transform: '', bottom: BAR_BOTTOM }); store.set('apr-bar', null); }
+let drag = null, lastTap = 0;
+grip.addEventListener('pointerdown', e => { const r = bar.getBoundingClientRect(); drag = { dx: e.clientX - r.left, dy: e.clientY - r.top, sx: e.clientX, sy: e.clientY, moved: false }; grip.setPointerCapture(e.pointerId); grip.style.cursor = 'grabbing'; e.preventDefault(); });
+grip.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) > 5) drag.moved = true;
+  if (!drag.moved) return;
+  putBar(Math.min(Math.max(e.clientX - drag.dx, M), innerWidth - bar.offsetWidth - M), Math.min(Math.max(e.clientY - drag.dy, M), innerHeight - bar.offsetHeight - M));
+});
+function endDrag() {
+  if (!drag) return; const moved = drag.moved; drag = null; grip.style.cursor = 'grab';
+  if (moved) { const r = bar.getBoundingClientRect(); store.set('apr-bar', { fx: (r.left - M) / Math.max(1, innerWidth - r.width - 2 * M), fy: (r.top - M) / Math.max(1, innerHeight - r.height - 2 * M) }); return; }
+  if (Date.now() - lastTap < 350) { resetBar(); lastTap = 0; } else lastTap = Date.now();   // doble toque = volver al centro
+}
+grip.addEventListener('pointerup', endDrag); grip.addEventListener('pointercancel', endDrag);
+window.addEventListener('resize', restoreBar);
+
+function setSettings(open) {
+  $('settings-wrap').style.gridTemplateRows = open ? '1fr' : '0fr'; $('settings-body').inert = !open;
+  $('btn-settings').setAttribute('aria-expanded', open); $('settings-chev').classList.toggle('rotate-180', open);
+  store.set('apr-settings-open', open);
+}
+$('btn-settings').onclick = () => setSettings($('btn-settings').getAttribute('aria-expanded') !== 'true');
+const so = store.get('apr-settings-open'); setSettings(so === null ? innerWidth >= 1024 : so);   // por defecto: abierto en escritorio, cerrado en móvil
+window.addEventListener('beforeunload', () => synth.cancel());
+let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(renderCanvas, 300); });
+setEnabled(false);
+</script>
+</body>
+</html>
